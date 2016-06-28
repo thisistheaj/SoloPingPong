@@ -54,6 +54,7 @@ function trackPosition(evt) {
 	)
 }
 
+
 gameCanvas.addEventListener("mousemove",trackPosition,true);
 
 paintCanvas();
