@@ -19,4 +19,41 @@ window.cancelRequestAnimFrame = ( function() {
 		clearTimeout;
 } )();
 
-console.log('Holla');
+//DO Not Edit above
+
+// console.log('Holla');
+
+// Step: 01 .. AJB .. Create Game Canvas $ track mouse pos
+
+var gameCanvas = document.getElementById("canvas"); // Store HTML5 canvas tag into a JS Variable
+
+var ctx = gameCanvas.getContext("2d"); //cretae content 2d
+var W = window.innerWidth;
+var H = window.innerHeight;
+var mouseObj = {};
+
+gameCanvas.width = W;
+gameCanvas.height = H;
+
+console.log("The browser width is currently " + W);
+
+function paintCanvas() {
+	console.log("The browser width is currently " + W);
+	ctx.fillStyle = "#000000";
+	ctx.fillRect(0,0,W,H);
+}
+
+function trackPosition(evt) {
+	mouseObj.x = evt.pageX;
+	mouseObj.y = evt.pageY;
+	console.log(
+		"Cursor X is: " +
+		mouseObj.x +
+		" Cursor Y is: " +
+		mouseObj.y
+	)
+}
+
+gameCanvas.addEventListener("mousemove",trackPosition,true);
+
+paintCanvas();
