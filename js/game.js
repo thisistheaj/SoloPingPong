@@ -10,6 +10,7 @@
             function (callback) {
                 return window.setTimeout(callback, 1000 / 60);
             };
+        
     })();
 
     window.cancelRequestAnimFrame = (function () {
