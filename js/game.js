@@ -1,4 +1,5 @@
 (function () {
+    'use strict';
 
     // RequestAnimFrame: a browser API for getting smooth animations
     window.requestAnimFrame = (function () {
@@ -32,9 +33,12 @@
 
     var ctx = gameCanvas.getContext("2d"); //cretae content 2d
     var mouseObj = {};
+
     var W = window.innerWidth;
     var H = window.innerHeight;
-
+    var COLOR_MAX = 255;
+    var COLOR_BUFFER = 0;
+    var COLOR_BASE = "7d";
 
     gameCanvas.addEventListener("mousemove", function trackPosition(evt) {
         mouseObj.x = evt.pageX;
@@ -42,7 +46,7 @@
         resizeCanvasToScreen();
         var x = getXAsHex();
         var y = getYAsHex();
-        paintCanvasWithColor("#" + x + x + x);
+        paintCanvasWithColor("#" + COLOR_BASE + y + COLOR_BASE);
     }, true);
 
     function resizeCanvasToScreen() {
@@ -65,7 +69,7 @@
 
 
     function getXAsHex() {
-        var n = Math.ceil((mouseObj.x / W) * 255).toString(16)
+        var n = Math.ceil(((mouseObj.x / W) * (COLOR_MAX - 2*COLOR_BUFFER)) + COLOR_BUFFER).toString(16);
         if (n.length < 2) {
             return "0" + n;
         }
@@ -73,7 +77,7 @@
     }
 
     function getYAsHex() {
-        var n = Math.ceil((mouseObj.y / H) * 255).toString(16)
+        var n = Math.ceil(((mouseObj.y / H) * (COLOR_MAX - 2*COLOR_BUFFER)) + COLOR_BUFFER).toString(16);
         if (n.length < 2) {
             return "0" + n;
         }
