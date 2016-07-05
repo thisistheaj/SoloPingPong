@@ -1,10 +1,10 @@
 // RequestAnimFrame: a browser API for getting smooth animations
 window.requestAnimFrame = (function(){
 	return  window.requestAnimationFrame   ||
-			window.webkitRequestAnimationFrame ||
-			window.mozRequestAnimationFrame    ||
-			window.oRequestAnimationFrame      ||
-			window.msRequestAnimationFrame     ||
+		window.webkitRequestAnimationFrame ||
+		window.mozRequestAnimationFrame    ||
+		window.oRequestAnimationFrame      ||
+		window.msRequestAnimationFrame     ||
 		function( callback ){
 			return window.setTimeout(callback, 1000 / 60);
 		};
@@ -12,10 +12,10 @@ window.requestAnimFrame = (function(){
 
 window.cancelRequestAnimFrame = ( function() {
 	return  window.cancelAnimationFrame          ||
-			window.webkitCancelRequestAnimationFrame ||
-			window.mozCancelRequestAnimationFrame    ||
-			window.oCancelRequestAnimationFrame      ||
-			window.msCancelRequestAnimationFrame     ||
+		window.webkitCancelRequestAnimationFrame ||
+		window.mozCancelRequestAnimationFrame    ||
+		window.oCancelRequestAnimationFrame      ||
+		window.msCancelRequestAnimationFrame     ||
 		clearTimeout;
 } )();
 
@@ -32,10 +32,48 @@ var W = window.innerWidth;
 var H = window.innerHeight;
 var mouseObj = {};
 
-gameCanvas.width = W;
-gameCanvas.height = H;
+var ball = {
+	x: 50,
+	y: 50,
+	r: 5,
+	c: "#ffffff",
+	vx: 4,
+	vy: 8,
+	draw: function () {
+		ctx.beginPath();
+		ctx.fillStyle = this.c;
+		ctx.arc(this.x,this.y,this.r,0,Math.PI*2,false);
+		ctx.fill();
+	}
+};
 
-console.log("The browser width is currently " + W);
+var startBtn = {
+	w: 100,
+	h: 50,
+	x: (W/2) - 50,
+	y: (H/2) - 25,
+	draw: function () {
+		ctx.strokeStyle = "#ffffff";
+		ctx.lineWidth = "2";
+		ctx.strokeRect(this.x,this.y,this.w,this.h);
+
+		ctx.font = "18px Arial, sans-serif";
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle";
+		ctx.fillStyle = "#ffffff";
+		ctx.fillText("Start", W/2, H/2);
+	}
+};
+
+var points = 0;
+function paintScore() {
+	ctx.fillStyle = "#ffffff";
+	ctx.font = "18px Arial, sans-serif";
+	ctx.textAlign = "left";
+	ctx.textBaseline = "top";
+	ctx.fillText("Score: " + points, 20, 20);
+}
+
 
 function paintCanvas() {
 	console.log("The browser width is currently " + W);
@@ -54,7 +92,14 @@ function trackPosition(evt) {
 	)
 }
 
+gameCanvas.width = W;
+gameCanvas.height = H;
 
 gameCanvas.addEventListener("mousemove",trackPosition,true);
 
 paintCanvas();
+
+ball.draw();
+startBtn.draw();
+paintScore();
+
