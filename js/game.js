@@ -31,6 +31,8 @@ var ctx = gameCanvas.getContext("2d"); //cretae content 2d
 var W = window.innerWidth;
 var H = window.innerHeight;
 var mouseObj = {};
+var points = 0;
+var paddlesArray = [];
 
 var ball = {
 	x: 50,
@@ -65,7 +67,6 @@ var startBtn = {
 	}
 };
 
-var points = 0;
 function paintScore() {
 	ctx.fillStyle = "#ffffff";
 	ctx.font = "18px Arial, sans-serif";
@@ -77,6 +78,7 @@ function paintScore() {
 
 function paintCanvas() {
 	console.log("The browser width is currently " + W);
+	console.log("The browser height is currently " + H);
 	ctx.fillStyle = "#000000";
 	ctx.fillRect(0,0,W,H);
 }
@@ -92,14 +94,40 @@ function trackPosition(evt) {
 	)
 }
 
+function PaddlePosition(TB) {
+	this.width = 150;
+	this.height = 5;
+
+	this.x = W/2 - this.width/2;
+	if (TB === "top") {
+		this.y = 0;
+	} else if (TB === "bottom") {
+		this.y = H - this.height;
+	}
+
+	// return this;
+}
+
+//get info about screen for painting
 gameCanvas.width = W;
 gameCanvas.height = H;
-
 gameCanvas.addEventListener("mousemove",trackPosition,true);
 
-paintCanvas();
+//create paddle object models
+paddlesArray.push(new PaddlePosition("top"));
+paddlesArray.push(new PaddlePosition("bottom"));
 
-ball.draw();
-startBtn.draw();
+console.log("top paddle y is: " + paddlesArray[0].y);
+console.log("bottom paddle y is: " + paddlesArray[1].y);
+
+//draw screen
+paintCanvas();
 paintScore();
 
+//draw objects
+ball.draw();
+startBtn.draw();
+
+for (var i = 0; i < paddlesArray.length; i++) {
+
+}
