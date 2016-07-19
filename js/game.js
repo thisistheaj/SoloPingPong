@@ -38,6 +38,12 @@
     var collisionSound = document.getElementById('collide');
     var isGameOver = false;
 
+    var isColliding = false;
+    var particles = [];
+    var particlesPos = {};
+    var particleDir = 1;
+    var particleCount = 20;
+
     var ball = {
         x: 50,
         y: 50,
@@ -229,6 +235,15 @@
                 ball.x = 0;
             }
         }
+
+        if (isColliding){
+            for (var i = 0; i < particleCount;i++){
+                particles.push(new createParticles(particlesPos.x,particlesPos.y,particleDir));
+            }
+        }
+
+        emitParticles();
+        isColliding = false;
     }
 
     function collides(b,p) {
@@ -248,8 +263,34 @@
     function collideAction(b,p) {
         ball.vy *=-1;
         score++;
+        console.log(Math.floor(score % 4));
+        console.log(Math.floor(score % 4) == 0);
+        increaseSpeed();
+
         if (collisionSound) {
             collisionSound.play();
+        }
+
+        if(paddleHit == 0) {
+            ball.y = p.y - p.height;
+            particlesPos.y = ball.y + ball.r;
+            particleDir = -1;
+        } else if (paddleHit == 1) {
+            ball.y = p.y + p.height + ball.r;
+            particlesPos.y = ball.y - ball.r;
+            particleDir = 1;
+        }
+
+        particlesPos.x = ball.x;
+        isColliding = true;
+    }
+
+    function increaseSpeed() {
+        if (Math.abs(ball.vx < 15)) {
+            if (Math.floor(score % 4) == 0) {
+                ball.vx *= 1.05;
+                ball.vy *= 1.05;
+            }
         }
     }
 
@@ -265,6 +306,31 @@
 
         replayButton.draw();
         isGameOver = true;
+    }
+
+    function createParticles(x,y,d) {
+        this.x = x || 0;
+        this.y = y || 0;
+        this.radius = 2;
+        this.vx = -1.5 + Math.random() * 3;
+        this.vy = d * Math.random() * 1.5;
+    }
+
+    function emitParticles() {
+        for (var i = 0; i < particles.length; i++) {
+            var particle = particles[i];
+
+            ctx.beginPath();
+            ctx.fillStyle = "#ffffff";
+            if (particle.radius > 0) {
+                ctx.arc(particle.x,particle.y,particle.radius,0,Math.PI*2,false);
+            }
+            ctx.fill();
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+            particle.radius = Math.max(particle.radius - 0.05,0.0);
+
+        }
     }
 
     main();
