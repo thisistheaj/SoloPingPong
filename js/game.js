@@ -32,11 +32,11 @@
     var H = window.innerHeight;
 
     var mouseObj = {};
-    var points = 0;
+    var score = 0;
     var paddlesArray = [];
     var paddleHit;
     var collisionSound = document.getElementById('collide');
-    var flagGameOver = false;
+    var isGameOver = false;
 
     var ball = {
         x: 50,
@@ -71,7 +71,7 @@
         }
     };
 
-    var gameOverBtn = {
+    var replayButton = {
         width: 100,
         height: 50,
         x: (W / 2) - 50,
@@ -137,7 +137,7 @@
         ctx.font = "18px Arial, sans-serif";
         ctx.textAlign = "left";
         ctx.textBaseline = "top";
-        ctx.fillText("Score: " + points, 20, 20);
+        ctx.fillText("Score: " + score, 20, 20);
     }
 
 
@@ -159,6 +159,21 @@
             if (my >= startBtn.y && mx <= startBtn.y + startBtn.height) {
                 startBtn = {};
                 animloop();
+            }
+        }
+
+        if (isGameOver) {
+            if (mx >= replayButton.x && mx <= replayButton.x + replayButton.width) {
+                if (my >= replayButton.y && mx <= replayButton.y + replayButton.height) {
+                    // replayButton = {};
+                    score = 0;
+                    ball.x = 50;
+                    ball.y = 50;
+                    ball.vx = 4;
+                    ball.vy = 8;
+                    isGameOver = false;
+                    animloop();
+                }
             }
         }
     }
@@ -232,22 +247,24 @@
 
     function collideAction(b,p) {
         ball.vy *=-1;
-        points++;
+        score++;
         if (collisionSound) {
             collisionSound.play();
         }
     }
 
     function gameOver() {
-        paintCanvas();
+        // paintCanvas();
         ctx.fillStyle = "#ffffff";
         ctx.font = "20px Arial, san-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("GAME OVER - You scored: " + points + "!",W/2,H/2 + 25);
+        ctx.fillText("GAME OVER - You scored: " + score + "!", W/2, H/2 + 25);
 
-        gameOverBtn.draw();
         cancelRequestAnimFrame(init);
+
+        replayButton.draw();
+        isGameOver = true;
     }
 
     main();
