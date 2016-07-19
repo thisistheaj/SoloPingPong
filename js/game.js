@@ -36,6 +36,7 @@
     var paddlesArray = [];
     var paddleHit;
     var collisionSound = document.getElementById('collide');
+    var flagGameOver = false;
 
     var ball = {
         x: 50,
@@ -69,6 +70,25 @@
             ctx.fillText("Start", W / 2, H / 2);
         }
     };
+
+    var gameOverBtn = {
+        width: 100,
+        height: 50,
+        x: (W / 2) - 50,
+        y: (H / 2) - 50,
+        draw: function () {
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = "2";
+            ctx.strokeRect(this.x, this.y, this.width, this.height);
+
+            ctx.font = "18px Arial, sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText("Replay?", W / 2, H / 2 - 25);
+        }
+    };
+
 
     function main() {
 
@@ -180,8 +200,10 @@
             //collide with walls or end game
             if (ball.y + ball.r > H) {
                 //GameOver
+                gameOver();
             } else if (ball.y < 0) {
                 //GameOver
+                gameOver();
             }
 
             if (ball.x + ball.r > W) {
@@ -214,6 +236,18 @@
         if (collisionSound) {
             collisionSound.play();
         }
+    }
+
+    function gameOver() {
+        paintCanvas();
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "20px Arial, san-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("GAME OVER - You scored: " + points + "!",W/2,H/2 + 25);
+
+        gameOverBtn.draw();
+        cancelRequestAnimFrame(init);
     }
 
     main();
