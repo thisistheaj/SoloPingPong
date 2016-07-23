@@ -48,9 +48,9 @@
         x: 50,
         y: 50,
         r: 5,
-        c: "#ffffff",
-        vx: 4,
-        vy: 8,
+        c: "#ffc107",
+        vx: 8,
+        vy: 4,
         draw: function () {
             ctx.beginPath();
             ctx.fillStyle = this.c;
@@ -63,17 +63,37 @@
         width: 100,
         height: 50,
         x: (W / 2) - 50,
-        y: (H / 2) - 25,
+        y: (H) - 75,
         draw: function () {
-            ctx.strokeStyle = "#ffffff";
+            ctx.strokeStyle = "#ffc107";
             ctx.lineWidth = "2";
             ctx.strokeRect(this.x, this.y, this.width, this.height);
 
             ctx.font = "18px Arial, sans-serif";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillStyle = "#ffffff";
-            ctx.fillText("Start", W / 2, H / 2);
+            ctx.fillStyle = "#ffc107";
+            ctx.fillText("Start", W / 2, H - 50 );
+        }
+    };
+
+    var instructions = {
+        width: 340,
+        height: 150,
+        x: (W / 2) - 170,
+        y: (H/2) - 75,
+        draw: function () {
+            ctx.strokeStyle = "#969696";
+            ctx.lineWidth = "2";
+            ctx.strokeRect(this.x, this.y, this.width, this.height);
+
+            ctx.font = "18px Arial, sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#969696";
+            ctx.fillText("-use the mouse to move the paddles", W / 2, H/2 - 25);
+            ctx.fillText("-don't let the ball out the sides           ", W / 2, H/2 );
+            ctx.fillText("-keep up, and get points!                   ", W / 2, H/2 + 25);
         }
     };
 
@@ -83,14 +103,14 @@
         x: (W / 2) - 50,
         y: (H / 2) - 50,
         draw: function () {
-            ctx.strokeStyle = "#ffffff";
+            ctx.strokeStyle = "#ffc107";
             ctx.lineWidth = "2";
             ctx.strokeRect(this.x, this.y, this.width, this.height);
 
             ctx.font = "18px Arial, sans-serif";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillStyle = "#ffffff";
+            ctx.fillStyle = "#ffc107";
             ctx.fillText("Replay?", W / 2, H / 2 - 25);
         }
     };
@@ -104,7 +124,7 @@
         gameCanvas.addEventListener("mousemove", trackPosition, true);
         gameCanvas.addEventListener("mousedown", btnClick, true);
 
-        //create paddle object models
+        // create paddle object models
         paddlesArray.push(new PaddlePosition("top"));
         paddlesArray.push(new PaddlePosition("bottom"));
 
@@ -114,6 +134,7 @@
         paintPaddles();
         ball.draw();
         startBtn.draw();
+        instructions.draw();
     }
 
     function refreshCanvasFun() {
@@ -128,7 +149,7 @@
         //move the paddle
         for (var i = 0; i < paddlesArray.length; i++) {
             var p = paddlesArray[i];
-            p.x = mouseObj.x - p.width / 2;
+            p.y = mouseObj.y - p.height / 2;
         }
         //move the ball
         ball.x += ball.vx;
@@ -139,16 +160,15 @@
     }
 
     function paintScore() {
-        ctx.fillStyle = "#ffffff";
+        ctx.fillStyle = "#969696";
         ctx.font = "18px Arial, sans-serif";
-        ctx.textAlign = "left";
+        ctx.textAlign = "center";
         ctx.textBaseline = "top";
-        ctx.fillText("Score: " + score, 20, 20);
+        ctx.fillText("Score: " + score, W/2, 20);
     }
 
-
     function paintCanvas() {
-        ctx.fillStyle = "#000000";
+        ctx.fillStyle = "#202020";
         ctx.fillRect(0, 0, W, H);
     }
 
@@ -161,8 +181,8 @@
         var mx = evt.pageX;
         var my = evt.pageY;
 
-        if (mx >= startBtn.x && mx <= startBtn.x + startBtn.width) {
-            if (my >= startBtn.y && mx <= startBtn.y + startBtn.height) {
+        if (mx >= startBtn.x && mx <= (startBtn.x + startBtn.width)) {
+            if (my >= startBtn.y && my <= (startBtn.y + startBtn.height)) {
                 startBtn = {};
                 animloop();
             }
@@ -170,13 +190,13 @@
 
         if (isGameOver) {
             if (mx >= replayButton.x && mx <= replayButton.x + replayButton.width) {
-                if (my >= replayButton.y && mx <= replayButton.y + replayButton.height) {
+                if (my >= replayButton.y && my <= replayButton.y + replayButton.height) {
                     // replayButton = {};
                     score = 0;
                     ball.x = 50;
                     ball.y = 50;
-                    ball.vx = 4;
-                    ball.vy = 8;
+                    ball.vx = 8;
+                    ball.vy = 4;
                     isGameOver = false;
                     animloop();
                 }
@@ -187,20 +207,20 @@
     function paintPaddles() {
         for (var i = 0; i < paddlesArray.length; i++) {
             var p = paddlesArray[i];
-            ctx.fillStyle = "#ffffff";
+            ctx.fillStyle = i ? "#666600":"#006666";
             ctx.fillRect(p.x, p.y, p.width, p.height);
         }
     }
 
     function PaddlePosition(TB) {
-        this.width = 150;
-        this.height = 5;
+        this.width = 5;
+        this.height = 150;
 
-        this.x = W / 2 - this.width / 2;
+        this.y = H / 2 - this.height / 2;
         if (TB === "top") {
-            this.y = 0;
+            this.x = 0;
         } else if (TB === "bottom") {
-            this.y = H - this.height;
+            this.x = W - this.width;
         }
     }
 
@@ -219,20 +239,20 @@
             collideAction(ball, pBot);
         } else {
             //collide with walls or end game
-            if (ball.y + ball.r > H) {
+            if (ball.x + ball.r > W) {
                 //GameOver
                 gameOver();
-            } else if (ball.y < 0) {
+            } else if (ball.x < 0) {
                 //GameOver
                 gameOver();
             }
 
-            if (ball.x + ball.r > W) {
-                ball.vx *= -1;
-                ball.x = W - ball.r;
-            } else if (ball.x < 0) {
-                ball.vx *= -1;
-                ball.x = 0;
+            if (ball.y + ball.r > H) {
+                ball.vy *= -1;
+                ball.y = H - ball.r;
+            } else if (ball.y < 0) {
+                ball.vy *= -1;
+                ball.y = 0;
             }
         }
 
@@ -247,11 +267,11 @@
     }
 
     function collides(b,p) {
-        if (b.x + b.r >= p.x && b.x - b.r <= p.x + p.width) {
-            if (b.y >= (p.y - p.height) && p.y > 0) {
+        if (b.y + b.r >= p.y && b.y - b.r <= p.y + p.height) {
+            if (b.x >= (p.x - p.width) && p.x > 0) {
                 paddleHit = 0;
                 return true;
-            } else if (b.y <= p.height && p.y === 0) {
+            } else if (b.x <= p.width && p.x === 0) {
                 paddleHit = 1;
                 return true;
             } else {
@@ -261,7 +281,7 @@
     }
 
     function collideAction(b,p) {
-        ball.vy *=-1;
+        ball.vx *=-1;
         score++;
         increaseSpeed();
 
@@ -270,31 +290,36 @@
         }
 
         if(paddleHit == 0) {
-            ball.y = p.y - p.height;
-            particlesPos.y = ball.y + ball.r;
+            ball.x = p.x - p.width;
+            particlesPos.x = ball.x + ball.r;
             particleDir = -1;
         } else if (paddleHit == 1) {
-            ball.y = p.y + p.height + ball.r;
-            particlesPos.y = ball.y - ball.r;
+            ball.x = p.x + p.width + ball.r;
+            particlesPos.x = ball.x - ball.r;
             particleDir = 1;
         }
 
-        particlesPos.x = ball.x;
+        particlesPos.y = ball.y;
         isColliding = true;
     }
 
     function increaseSpeed() {
-        if (Math.abs(ball.vx < 15)) {
+        if (Math.abs(ball.vx) < 15) {
             if (Math.floor(score % 4) == 0) {
                 ball.vx *= 1.05;
                 ball.vy *= 1.05;
+                for (var i = 0; i < paddlesArray.length;i++) {
+                    if (paddlesArray[i].height > 20){
+                        paddlesArray[i].height -= 5;
+                    }
+                }
             }
         }
     }
 
     function gameOver() {
         // paintCanvas();
-        ctx.fillStyle = "#ffffff";
+        ctx.fillStyle = "#969696";
         ctx.font = "20px Arial, san-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -302,6 +327,9 @@
 
         cancelRequestAnimFrame(init);
 
+        for (var i = 0; i < paddlesArray.length;i++) {
+            paddlesArray[i].height = 150;
+        }
         replayButton.draw();
         isGameOver = true;
     }
@@ -310,8 +338,8 @@
         this.x = x || 0;
         this.y = y || 0;
         this.radius = 2;
-        this.vx = -1.5 + Math.random() * 3;
-        this.vy = d * Math.random() * 1.5;
+        this.vy = -1.5 + Math.random() * 3;
+        this.vx = d * Math.random() * 1.5;
     }
 
     function emitParticles() {
@@ -319,7 +347,7 @@
             var particle = particles[i];
 
             ctx.beginPath();
-            ctx.fillStyle = "#ffffff";
+            ctx.fillStyle = "#ffc107";
             if (particle.radius > 0) {
                 ctx.arc(particle.x,particle.y,particle.radius,0,Math.PI*2,false);
             }
