@@ -263,8 +263,6 @@
     function collideAction(b,p) {
         ball.vy *=-1;
         score++;
-        console.log(Math.floor(score % 4));
-        console.log(Math.floor(score % 4) == 0);
         increaseSpeed();
 
         if (collisionSound) {
