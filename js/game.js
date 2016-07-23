@@ -43,6 +43,7 @@
     var particlesPos = {};
     var particleDir = 1;
     var particleCount = 20;
+    var particleColor = "";
 
     var ball = {
         x: 50,
@@ -235,7 +236,9 @@
 
         if (collides(ball, pTop)) {
             collideAction(ball, pTop);
+            particleColor = randomHex();
         } else if (collides(ball, pBot)) {
+            particleColor = randomHex();
             collideAction(ball, pBot);
         } else {
             //collide with walls or end game
@@ -262,7 +265,8 @@
             }
         }
 
-        emitParticles();
+        console.log(particleColor);
+        emitParticles(particleColor);
         isColliding = false;
     }
 
@@ -342,12 +346,12 @@
         this.vx = d * Math.random() * 1.5;
     }
 
-    function emitParticles() {
+    function emitParticles(c) {
         for (var i = 0; i < particles.length; i++) {
             var particle = particles[i];
 
             ctx.beginPath();
-            ctx.fillStyle = "#ffc107";
+            ctx.fillStyle = c;
             if (particle.radius > 0) {
                 ctx.arc(particle.x,particle.y,particle.radius,0,Math.PI*2,false);
             }
@@ -357,6 +361,13 @@
             particle.radius = Math.max(particle.radius - 0.05,0.0);
 
         }
+    }
+
+    function randomHex() {
+        return '#' +
+            Math.floor(Math.random()*255).toString(16) +
+            Math.floor(Math.random()*255).toString(16) +
+            Math.floor(Math.random()*255).toString(16)
     }
 
     main();
